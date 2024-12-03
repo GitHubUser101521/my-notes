@@ -13,7 +13,8 @@ type HeaderProp = {
 function Header({ notes, url, searchTerm, setSearchTerm, filteredNotes, setFilteredNotes}: HeaderProp) {
     const currentAcc = 'Cherryl'
     const inputRef = useRef<HTMLInputElement>(null)
-
+    console.log(searchTerm)
+    
     useEffect(() => {
       const fetchData = async () => {
         try {
