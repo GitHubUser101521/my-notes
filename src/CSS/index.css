@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  overflow-x: hidden;
+}
+
+img:hover {
+  cursor: pointer;
+}
+
+img:active {
+  opacity: .7;
+}
+
+.bebas-neue {
+  font-family: "Bebas Neue", sans-serif;
+}
+
+.sans {
+  font-family: sans-serif;
+}
+
+.container {
+  max-width: 1536px;
+  max-height: 791px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-rows: 1fr 11fr;
+  padding: 2rem;
+}
+
+.multi-truncate {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* General Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 3px;
+  margin-top: 4rem;
+}
+
+/* Scrollbar Track */
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+/* Scrollbar Thumb */
+::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 10px;
+}
+
+.h-120 {
+  height: 33rem;
+  overflow-y: auto;
+}
+
+.wh-10 {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.animation-up:hover > :not() {
+  opacity: .5;
+}
