@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Note } from './App.tsx'
+import EditNote from './EditNote.tsx';
 
 type PreviewProps = {
   notes: Note[],
@@ -24,12 +25,14 @@ function PreviewNotes({
   const [editingHeader, setEditingHeader] = useState(false)
   const [editedNote, setEditedNote] = useState(currentNote)
   const [editingContent, setEditingContent] = useState(false)
+  const [editFullscreen, setEditFullscreen] = useState(false)
   const textareaRef= useRef<HTMLTextAreaElement | null>(null)
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (editingHeader && event.key === 'Enter') {
         setEditingHeader(false);
+        handleConfirmEdit()
       } else if (editingContent) {
         if (event.key === 'Escape') {
           setEditingContent(false);
@@ -45,8 +48,6 @@ function PreviewNotes({
       } else {
         return;
       }
-    
-      console.log(editedNote);
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -60,7 +61,13 @@ function PreviewNotes({
   }, [openedNoteIndex])
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEditedNote({ ...currentNote, title: e.target.value });
+    if (e.target.value.length > 25 || e.target.value.length < 1) {
+      setEditedNote({ ...currentNote, title: e.target.value.slice(0, 25) });
+      setEditingHeader(false)
+      handleConfirmEdit()
+    } else {
+      setEditedNote({ ...currentNote, title: e.target.value });
+    }
   };
 
   const handleConfirmEdit = async () => {
@@ -117,11 +124,12 @@ function PreviewNotes({
                     {editingHeader ? 
                       <input 
                         type="text" 
-                        className='rounded-md'
+                        autoFocus
+                        className='rounded-md outline-none'
                         placeholder={currentNote.title}
                         onChange={(e) => handleTitleChange(e)}
                       />
-                    : currentNote.title}
+                    : <span onClick={() => setEditingHeader(true)}>{currentNote.title}</span>}
                   </p>
                   <p className='font-medium'>{currentNote.date}</p>
                 </div>
@@ -133,31 +141,24 @@ function PreviewNotes({
                 </div>
               </div>
 
-              {editingHeader ? 
-                <img 
-                  src="/check-icon.png" 
-                  className='wh-10'
-                  onClick={() => {
-                    setEditingHeader(false)
-                    handleConfirmEdit()
-                  }}
-                />
-              :
-                <img 
-                  src="/edit-icon.png" 
-                  className='wh-10'
-                  onClick={() => setEditingHeader(true)}
-                />
-              }
+              <img 
+                src="/edit-icon.png" 
+                className='wh-10'
+                onClick={() => {
+                  setEditFullscreen(true)
+                  setEditedNote({...currentNote})
+                }}
+              />
             </div>
 
             <div className='p-4 w-full h-96 overflow-y-auto' onClick={() => setEditingContent(true)}>
               {editingContent ? 
                 <textarea 
                   value={editedNote.content} 
-                  className='resize-none w-full h-full'
+                  className='resize-none w-full h-full outline-none'
                   ref={textareaRef}
                   autoFocus
+                  placeholder='Leaving it empty?'
                   onChange={(e) => {
                     setEditedNote({...editedNote, content: e.target.value})
                   }}
@@ -183,6 +184,15 @@ function PreviewNotes({
           <p className="text-sm text-gray-500">Tip: Open a note or make a new one!</p>
         </div>
       )}
+
+      {editFullscreen && <EditNote 
+        setEditFullscreen={setEditFullscreen}
+        editingHeader={editingHeader}
+        setEditedNote={setEditedNote}
+        editedNote={editedNote}
+        setEditingHeader={setEditingHeader}
+        handleConfirmEdit={handleConfirmEdit}
+      />}
     </div>
   );
 }

@@ -1,28 +1,6 @@
 {
   "notes": [
     {
-      "id": "1232024124893",
-      "title": "yellow",
-      "date": "December 2, 2024, 8:51 PM",
-      "content": "wkwkw",
-      "tags": [
-        "tag 1",
-        "tag 2"
-      ],
-      "color": "bg-amber-300"
-    },
-    {
-      "id": "12320241250852",
-      "title": "menangidddd",
-      "date": "December 3, 2024, 12:50 PM",
-      "content": "dawdadsdsd",
-      "tags": [
-        "tag 1",
-        "tag 2"
-      ],
-      "color": ""
-    },
-    {
       "id": "12320241251824",
       "title": "limegrene",
       "date": "December 3, 2024, 12:51 PM",
@@ -35,9 +13,9 @@
     },
     {
       "id": "12320241251128",
-      "title": "No Title Note",
+      "title": "hahahaha hdhshshdhsakjndj",
       "date": "December 3, 2024, 12:51 PM",
-      "content": "dwadawdaw",
+      "content": "",
       "tags": [
         "tag 1",
         "tag 2"
@@ -56,21 +34,10 @@
       "color": "bg-cyan-400"
     },
     {
-      "id": "12320241527138",
-      "title": "No Title Note",
-      "date": "December 3, 2024, 3:27 PM",
-      "content": "",
-      "tags": [
-        "tag 1",
-        "tag 2"
-      ],
-      "color": ""
-    },
-    {
       "id": "12320241554790",
       "title": "red",
       "date": "December 3, 2024, 3:54 PM",
-      "content": "dsadasd",
+      "content": "ok amann",
       "tags": [
         "tag 1",
         "tag 2"
@@ -78,15 +45,59 @@
       "color": "bg-red-600"
     },
     {
-      "id": "12320241555346",
-      "title": "more",
-      "date": "December 3, 2024, 3:55 PM",
-      "content": "im editing",
+      "id": "1242024941119",
+      "title": "No Title Note",
+      "date": "December 4, 2024, 9:41 AM",
+      "content": "",
       "tags": [
         "tag 1",
         "tag 2"
       ],
-      "color": ""
+      "color": "bg-lime-400"
+    },
+    {
+      "id": "1242024101754",
+      "title": "New notw",
+      "date": "December 4, 2024, 10:01 AM",
+      "content": "",
+      "tags": [
+        "tag 1",
+        "tag 2"
+      ],
+      "color": "bg-slate-100"
+    },
+    {
+      "id": "1242024103219",
+      "title": "No Title Note",
+      "date": "December 4, 2024, 10:03 AM",
+      "content": "casdawdaw",
+      "tags": [
+        "tag 1",
+        "tag 2"
+      ],
+      "color": "bg-slate-100"
+    },
+    {
+      "id": "12420241033672",
+      "title": "dsad",
+      "date": "December 4, 2024, 10:33 AM",
+      "content": "dwhbjaj\n",
+      "tags": [
+        "tag 1",
+        "tag 2"
+      ],
+      "color": "bg-lime-400"
+    },
+    {
+      "id": "1242024113421",
+      "title": "haha",
+      "date": "December 4, 2024, 11:34 AM",
+      "content": "",
+      "tags": [
+        "tag 1",
+        "tag 2"
+      ],
+      "color": "bg-blue-500"
     }
   ]
 }

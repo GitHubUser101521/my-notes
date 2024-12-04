@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Note } from './App.tsx';
 import { format } from 'date-fns';
 
@@ -11,8 +11,23 @@ function NewNote({ setIsEditing, addNote }: NewNoteProps) {
   const [content, setContent] = useState(''); 
   const [editingTitle, setEditingTitle] = useState(false);
   const [title, setTitle] = useState('No Title Note');
-  const [color, setColor] = useState('')
+  const [color, setColor] = useState('bg-slate-100')
   const newDate = new Date();
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!editingTitle && event.key === 'Enter') {
+        confirmAddNote()
+      } else if (editingTitle && event.key === 'Enter') {
+        setEditingTitle(false)
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  })
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value); 
@@ -37,13 +52,17 @@ function NewNote({ setIsEditing, addNote }: NewNoteProps) {
   };
 
   const editTitle = (e: any) => {
-    setTitle(e.target.value)
+    if (e.target.value.length > 25) {
+      setTitle(title)
+    } else {
+      setTitle(e.target.value)
+    }
   }
 
   return (
     <>
-      <div className="bg-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-4 rounded-md w-full h-full px-32">
-        <div className='flex justify-evenly items-center'>
+      <div className="bg-note">
+        <div className='flex justify-between items-center'>
           <img src="/arrow-icon.png" className='wh-10 cursor-pointer' onClick={() => setIsEditing(false)} />
 
           <div className='flex gap-4 items-center justify-center'>
@@ -51,11 +70,11 @@ function NewNote({ setIsEditing, addNote }: NewNoteProps) {
               <input 
                 placeholder='Enter new title...'
                 value={title}
-                className='text-3xl p-2 font-bold w-1/2 border-2 rounded-md'
+                className='text-5xl font-bold border-2 rounded-md h-12 text-center'
                 onChange={(event) => editTitle(event)}
               />
               : 
-              <h1 className='text-5xl font-bold'>{title}</h1>
+              <p className='text-5xl font-bold' onClick={() => setEditingTitle(true)}>{title}</p>
             }
             {editingTitle ? 
               <img 
@@ -77,29 +96,30 @@ function NewNote({ setIsEditing, addNote }: NewNoteProps) {
           <img src="/plus-icon.png" className='wh-10' onClick={confirmAddNote}/>
         </div>
 
-        <div className='flex justify-center items-center'>
-            <div>
-              <div className={"wh-10 " + color}></div>
-              <select onChange={(e) => setColor(e.target.value)}>
-                <option value="bg-slate-400">Default</option>
-                <option value="bg-lime-400">Limegreen</option>
+        <div className='flex justify-between items-center border-2 mt-4 rounded-lg'>
+            <div className='flex p-2 gap-2'>
+              <div className={"rounded-sm wh-10 " + color}></div>
+              <select onChange={(e) => {setColor(e.target.value)}} className='outline-none w-20'>
+                <option value="bg-slate-100">Default</option>
+                <option value="bg-lime-400">Lime</option>
                 <option value="bg-blue-500">Blue</option>
                 <option value="bg-amber-300">Yellow</option>
                 <option value="bg-cyan-400">Cyan</option>
                 <option value="bg-red-600">Red</option>
               </select>
             </div>
+        </div>
 
-          <textarea
+        <textarea
             value={content} 
             onChange={handleChange}
             placeholder='Start taking your note...'
-            className='resize-none w-3/4 mx-auto mt-8 outline-none p-4 rounded-lg'
-          />
-        </div>
+            className='resize-none w-full mx-auto mt-4 outline-none rounded-lg h-120'
+        />
       </div>
     </>
   );
 }
+
 
 export default NewNote;

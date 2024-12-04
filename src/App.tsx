@@ -18,9 +18,8 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isNoteOpen, setIsNoteOpen] = useState<boolean>(false);
-  const [openedNoteIndex, setOpenedNoteIndex] = useState(0);
+  const [openedNoteIndex, setOpenedNoteIndex] = useState(-1);
   const [searchTerm, setSearchTerm] = useState('')
-  const [filteredNotes, setFilteredNotes] = useState<Note[]>([])
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -79,28 +78,22 @@ function App() {
 
   return (
     <div className="container">
-      <Header 
-        notes={notes}
-        url={url}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        filteredNotes={filteredNotes}
-        setFilteredNotes={setFilteredNotes}
-      />
+      <Header />
 
       {isLoading ? (
         <p>Loading...</p>
       ) : error ? (
         <p>Error: {error}</p>
       ) : (
-        <div className="flex justify-between mt-8 gap-4 flex-grow">
+        <div className="flex justify-between mt-8 gap-4">
           <Notes
-            searchTerm={searchTerm}
             notes={notes}
             setIsNoteOpen={setIsNoteOpen}
             setOpenedNoteIndex={setOpenedNoteIndex}
             addNote={addNote}
-            filteredNotes={filteredNotes}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            openedNoteIndex={openedNoteIndex}
           />
           <PreviewNotes
             notes={notes}
