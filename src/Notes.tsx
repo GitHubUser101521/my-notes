@@ -1,27 +1,29 @@
-import { Note } from './App.tsx';
+import { Note, Category } from './App.tsx';
 import { useState, useRef, useEffect, useMemo } from 'react';
 import NewNote from './NewNote.tsx';
 
 type NotesProps = {
   notes: Note[];
+  categories: Array<Category>
   setIsNoteOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setOpenedNoteIndex: React.Dispatch<React.SetStateAction<number>>;
   addNote: (newNote: Note) => Promise<void>;
   searchTerm: string,
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>,
   openedNoteIndex: number,
+  setCategories: React.Dispatch<React.SetStateAction<Category[]>>
 };
 
-function Notes({ notes, setIsNoteOpen, setOpenedNoteIndex, addNote, searchTerm, setSearchTerm, openedNoteIndex }: NotesProps) {
+function Notes({ notes, categories, setIsNoteOpen, setOpenedNoteIndex, addNote, searchTerm, setSearchTerm, openedNoteIndex, setCategories }: NotesProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [categoryFilter, setCategoryFilter] = useState('')
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey && event.key === 'm') {
         inputRef.current?.focus();
-      }
-    };
+      }    };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => {
@@ -30,14 +32,84 @@ function Notes({ notes, setIsNoteOpen, setOpenedNoteIndex, addNote, searchTerm, 
   }, []);
 
   const filteredNotes = useMemo(() => {
-    if (searchTerm) {
+    if (searchTerm || categoryFilter) {
       return notes.filter(note => {
-        return note.title.toLowerCase().includes(searchTerm.toLowerCase())
+        return note.title.toLowerCase().includes(searchTerm.toLowerCase()) && note.category === categoryFilter
       })
     } else {
       return notes;
     }
-  }, [notes, searchTerm])
+  }, [notes, searchTerm, categoryFilter])
+
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (e.target.value === 'Add') {
+      const newCategoryInput = prompt('Add new category:');
+      
+      if (newCategoryInput) {
+        const newCategory = {
+          id: newCategoryInput.toLowerCase(),
+          name: newCategoryInput
+        }
+        alert(`Category ${newCategoryInput} added!`)
+
+        const addCategory = async () => {
+          setCategories([...categories, newCategory])
+          e.target.value = 'All'
+      
+          try {
+            const response = await fetch('http://localhost:3000/categories', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(newCategory)
+            })
+      
+            console.log(response.ok)
+          } catch (error) {
+            console.log(error)
+          }
+        }
+
+        addCategory()
+      } 
+
+      return;
+    }
+
+    if (e.target.value === 'Delete') {
+      const categoryToDelete = prompt('Type the category you want to delete (case sensitive):')
+      
+      if (categoryToDelete === 'All') {
+        alert('Cannot delete category All');
+        return;
+      } else {
+        if (!categories.find(category => category.name === categoryToDelete?.toLocaleLowerCase())) {
+          alert(`Category ${categoryToDelete} not found!`)
+          e.target.value = 'All'
+          return;
+        }
+
+        const deleteCategory = async () => {
+          try {
+            const response = await fetch(`http://localhost:3000/categories/${categoryToDelete}`, {
+              method: 'DELETE',
+            });
+      
+            if (!response.ok) {
+              console.error('Error deleting note:', response.statusText);
+            }
+          } catch (error) {
+            console.error('Error deleting note:', error);
+          }
+        };
+
+        deleteCategory()
+        alert(`Category ${categoryToDelete} deleted!`)
+        e.target.value = 'All'
+      }
+    }
+  }
 
   return (
     <>
@@ -64,8 +136,20 @@ function Notes({ notes, setIsNoteOpen, setOpenedNoteIndex, addNote, searchTerm, 
               ref={inputRef}
             />
 
-            <select className='w-1/4 text-center border-2 rounded-full px-4 h-10'>
-              <option value="">Folders</option>
+            <select 
+              className='w-1/4 text-center border-2 rounded-full px-4 h-10'
+              onChange={e => {
+                handleCategoryChange(e)
+                setCategoryFilter(e.target.value)
+                console.log(categoryFilter)
+              }}
+            >
+              {categories.map((category, index) => (
+                <option key={index} value={category.name}>{category.name}</option>
+              ))}
+
+              <option value="Add">+ Add new</option>
+              <option value="Delete" className='text-red-600'>&#10005; Delete Category</option>
             </select>
           </div>
         </div>
@@ -91,16 +175,9 @@ function Notes({ notes, setIsNoteOpen, setOpenedNoteIndex, addNote, searchTerm, 
 
                           <p className="multi-truncate">{note.content}</p>
 
-                          <div className="flex gap-2">
-                            {note.tags.map((tag, index) => (
-                              <span
-                                key={index}
-                                className="border-2 p-4 max-w-20 text-sm text-center max-h-8 flex justify-center items-center rounded-lg bg-white border-gray-600"
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
+                          <div className={note.category ? 'border-2 p-4 max-w-20 text-sm text-center max-h-8 flex justify-center items-center rounded-lg bg-white border-gray-600' : 'opacity-0 '}>
+                            {note.category}
+                          </div> 
                     </div>
                   ))}
             </div>
@@ -110,7 +187,9 @@ function Notes({ notes, setIsNoteOpen, setOpenedNoteIndex, addNote, searchTerm, 
             </div>
           )}
 
-          {notes.length > 0 && <p className="text-gray-500 text-center m-4">You've reached the end!</p>}
+          <p className="text-gray-500 text-center m-4">{
+            filteredNotes.length > 0 ? "You've reached the end!" : "No note found"
+          }</p> 
         </div>
       </div>
 

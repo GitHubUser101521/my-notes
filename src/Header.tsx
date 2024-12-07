@@ -12,10 +12,7 @@ function Header() {
           <p className="text-xl"><span className="text-gray-500">Welcome back, </span>{currentAcc}</p>
         </div>
 
-        <div className='flex gap-6 text-xl'>
-          <p>Notes</p>
-          <p>Calendar</p>
-        </div>
+        <p className="text-md">"Your thoughts, your events, your way."</p>
 
         <div className="flex justify-end items-center gap-4">
           <img src="/search-icon.png" className="wh-10"/>

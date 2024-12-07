@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Note } from './App.tsx'
+import { Note, Category } from './App.tsx'
 import EditNote from './EditNote.tsx';
 
 type PreviewProps = {
@@ -10,6 +10,7 @@ type PreviewProps = {
   setIsNoteOpen: React.Dispatch<React.SetStateAction<boolean>>,
   url: string,
   fetchData: () => Promise<void>
+  categories: Category[]
 }
 
 function PreviewNotes({ 
@@ -19,7 +20,8 @@ function PreviewNotes({
     deleteNote, 
     setIsNoteOpen, 
     url, 
-    fetchData 
+    fetchData,
+    categories
   }: PreviewProps) {
   const currentNote = notes[openedNoteIndex];
   const [editingHeader, setEditingHeader] = useState(false)
@@ -60,6 +62,11 @@ function PreviewNotes({
     setEditedNote({...currentNote})
   }, [openedNoteIndex])
 
+  useEffect(() => {
+    console.log(editedNote)
+    console.log()
+  }, [editedNote])
+
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length > 25 || e.target.value.length < 1) {
       setEditedNote({ ...currentNote, title: e.target.value.slice(0, 25) });
@@ -87,7 +94,7 @@ function PreviewNotes({
         const result = await response.json();
         console.log('Success:', result);
       } catch (error) {
-        console.error('Error:', error);
+        console.error(currentNote.id, error);
       }
 
       fetchData()
@@ -110,6 +117,11 @@ function PreviewNotes({
       }
     }
   }, [editingContent, textareaRef])
+
+  const handleChangeCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setEditedNote({...editedNote, category: e.target.value})
+    handleConfirmEdit()
+  }
 
   return (
     <div className='w-1/2 overflow-y-hidden'>
@@ -134,11 +146,21 @@ function PreviewNotes({
                   <p className='font-medium'>{currentNote.date}</p>
                 </div>
 
-                <div className='flex gap-3'>
-                  {currentNote.tags.map((tag) => (
-                    <p className='font-bold' key={tag}>#{tag}</p>
+                <select 
+                  onChange={(e) => handleChangeCategory(e)}
+                  className='px-2 py-1 rounded-sm w-fit outline-none'
+                  value={currentNote.category}
+                >
+                  {categories.map((category, index) => (
+                    <option key={index} value={category.name}>{category.name}</option>
                   ))}
-                </div>
+                </select>
+
+                {/* {currentNote.category && 
+                  <div className="border-2 p-4 max-w-20 text-sm text-center max-h-8 flex justify-center items-center rounded-lg bg-white border-gray-600">
+                    {currentNote.category}
+                  </div>
+                } */}
               </div>
 
               <img 

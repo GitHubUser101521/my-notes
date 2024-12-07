@@ -39,7 +39,7 @@ function NewNote({ setIsEditing, addNote }: NewNoteProps) {
         title: title,
         date: format(newDate, 'MMMM d, yyyy, h:mm a'),
         content: content,
-        tags: ['tag 1', 'tag 2'],
+        category: 'All',
         color: color
       };
 

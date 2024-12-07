@@ -8,13 +8,18 @@ export type Note = {
   title: string;
   date: string;
   content: string;
-  tags: string[];
+  category: string;
   color: string;
 };
 
+export type Category = {
+  name: string
+}
+
 function App() {
-  const url = 'http://localhost:3000/notes';
+  const url = 'http://localhost:3000/';
   const [notes, setNotes] = useState<Note[]>([]);
+  const [categories, setCategories] = useState<Category[]>([])
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isNoteOpen, setIsNoteOpen] = useState<boolean>(false);
@@ -26,9 +31,13 @@ function App() {
     setError(null);
 
     try {
-      const response = await fetch(url);
+      const response = await fetch(url+'notes');
       const fetchedData: Note[] = await response.json();
       setNotes(fetchedData.reverse());
+
+      const categoriesResponse = await fetch(url+'categories')
+      const fetchedCategories = await categoriesResponse.json()
+      setCategories(fetchedCategories);
     } catch (error) {
       console.error('Error fetching notes:', error);
     } finally {
@@ -62,7 +71,7 @@ function App() {
     setNotes([newNote, ...notes])
 
     try {
-      const response = await fetch(url, {
+      const response = await fetch(url+'notes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -88,12 +97,14 @@ function App() {
         <div className="flex justify-between mt-8 gap-4">
           <Notes
             notes={notes}
+            categories={categories}
             setIsNoteOpen={setIsNoteOpen}
             setOpenedNoteIndex={setOpenedNoteIndex}
             addNote={addNote}
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
             openedNoteIndex={openedNoteIndex}
+            setCategories={setCategories}
           />
           <PreviewNotes
             notes={notes}
@@ -103,6 +114,7 @@ function App() {
             setIsNoteOpen={setIsNoteOpen}
             url={url}
             fetchData={fetchData}
+            categories={categories}
           />
         </div>
       )}
