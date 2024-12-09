@@ -188,7 +188,7 @@ function Notes({ notes, categories, setIsNoteOpen, setOpenedNoteIndex, addNote, 
           )}
 
           <p className="text-gray-500 text-center m-4">{
-            filteredNotes.length > 0 ? "You've reached the end!" : "No note found"
+            filteredNotes.length > 0 ? "You've reached the end!" : categoryFilter ? 'No note found' : ''
           }</p> 
         </div>
       </div>
